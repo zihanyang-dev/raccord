@@ -1,0 +1,11 @@
+[package]
+name = "raccord-constraints"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+raccord-ir = { path = "../raccord-ir" }
+raccord-timeline = { path = "../raccord-timeline" }

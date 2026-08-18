@@ -1,0 +1,17 @@
+[package]
+name = "raccord-planner"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+raccord-audio = { path = "../raccord-audio" }
+raccord-cache = { path = "../raccord-cache" }
+raccord-compositor = { path = "../raccord-compositor" }
+raccord-constraints = { path = "../raccord-constraints" }
+raccord-ir = { path = "../raccord-ir" }
+raccord-media = { path = "../raccord-media" }
+raccord-time = { path = "../raccord-time" }
+raccord-timeline = { path = "../raccord-timeline" }

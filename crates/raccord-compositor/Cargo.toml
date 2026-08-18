@@ -1,0 +1,12 @@
+[package]
+name = "raccord-compositor"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+raccord-ir = { path = "../raccord-ir" }
+raccord-media = { path = "../raccord-media" }
+raccord-time = { path = "../raccord-time" }

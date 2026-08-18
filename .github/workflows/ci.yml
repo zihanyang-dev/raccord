@@ -1,0 +1,49 @@
+---
+name: CI
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    name: Rust workspace
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install pinned toolchain with mise
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
+
+      - name: Show toolchain
+        run: |
+          mise current rust
+          mise exec -- rustc --version
+          mise exec -- cargo --version
+
+      - name: Check formatting
+        run: mise exec -- cargo fmt --all -- --check
+
+      - name: Check workspace
+        run: mise exec -- cargo check --workspace --all-targets
+
+      - name: Run tests
+        run: mise exec -- cargo test --workspace --all-targets
+
+      - name: Run Clippy
+        run: >-
+          mise exec -- cargo clippy \
+            --workspace \
+            --all-targets \
+            --all-features \
+            -- -D warnings

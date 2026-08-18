@@ -1,0 +1,29 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/raccord-time",
+    "crates/raccord-ir",
+    "crates/raccord-timeline",
+    "crates/raccord-constraints",
+    "crates/raccord-media",
+    "crates/raccord-audio",
+    "crates/raccord-compositor",
+    "crates/raccord-cache",
+    "crates/raccord-planner",
+    "crates/raccord-rmap",
+    "crates/raccord-runtime",
+    "crates/raccord-server",
+    "crates/raccord-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97"
+license = "Apache-2.0"
+repository = "https://github.com/zihanyang-dev/raccord"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"

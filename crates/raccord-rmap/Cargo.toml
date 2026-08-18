@@ -1,0 +1,11 @@
+[package]
+name = "raccord-rmap"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+raccord-media = { path = "../raccord-media" }
+raccord-time = { path = "../raccord-time" }
