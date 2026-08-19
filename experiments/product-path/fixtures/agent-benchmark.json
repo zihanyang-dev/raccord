@@ -1,0 +1,225 @@
+[
+  {
+    "id": "delete-b",
+    "prompt": "Remove clip b and close the gap without changing the other clips.",
+    "requests": [
+      {"tool": "find", "args": {"query": "asset://b"}},
+      {"tool": "inspect", "args": {"ids": ["b"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "ripple_delete", "clip_id": "b"}]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "c", "start_frame": 72, "duration_frames": 96}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "replace-and-trim-b",
+    "prompt": "Replace clip b's source with asset://b-take-2 and trim clip b to exactly 48 frames.",
+    "requests": [
+      {"tool": "find", "args": {"query": "asset://b"}},
+      {"tool": "inspect", "args": {"ids": ["b"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "replace_source", "clip_id": "b", "source": "asset://b-take-2"},
+        {"op": "trim", "clip_id": "b", "duration_frames": 48}
+      ]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "b", "start_frame": 72, "duration_frames": 48},
+      {"id": "c", "start_frame": 120, "duration_frames": 96}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "insert-d-after-a",
+    "prompt": "Insert a new 24-frame clip with id d and source asset://d immediately after clip a; keep the existing clips in order.",
+    "requests": [
+      {"tool": "find", "args": {"query": "asset://a"}},
+      {"tool": "inspect", "args": {"ids": ["a"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{
+        "op": "insert_after",
+        "after": "a",
+        "clip": {"id": "d", "source": "asset://d", "duration_frames": 24}
+      }]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "d", "start_frame": 72, "duration_frames": 24},
+      {"id": "b", "start_frame": 96, "duration_frames": 72},
+      {"id": "c", "start_frame": 168, "duration_frames": 96}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "move-c-to-start",
+    "prompt": "Move clip c to the beginning of the timeline.",
+    "requests": [
+      {"tool": "find", "args": {"query": "asset://c"}},
+      {"tool": "inspect", "args": {"ids": ["c"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "move_after", "clip_id": "c", "after": null}]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "c", "start_frame": 0, "duration_frames": 96},
+      {"id": "a", "start_frame": 96, "duration_frames": 72},
+      {"id": "b", "start_frame": 168, "duration_frames": 72}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "recover-from-missing-clip",
+    "prompt": "Try to remove clip missing. If find shows it is absent, remove clip b instead.",
+    "requests": [
+      {"tool": "find", "args": {"query": "missing"}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "ripple_delete", "clip_id": "missing"}]}},
+      {"tool": "find", "args": {"query": "asset://b"}},
+      {"tool": "inspect", "args": {"ids": ["b"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "ripple_delete", "clip_id": "b"}]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "c", "start_frame": 72, "duration_frames": 96}
+    ],
+    "expected_errors": ["MISSING_CLIP"],
+    "acceptable_error_sequences": [[], ["MISSING_CLIP"]]
+  },
+  {
+    "id": "recover-from-stale-revision",
+    "prompt": "In two commits: first delete b and commit it. Then deliberately try to replace c with source asset://c-alt using revision 0, recover from STALE_REVISION by inspecting the new revision, and commit the replacement.",
+    "requests": [
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "ripple_delete", "clip_id": "b"}]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [{"op": "replace_source", "clip_id": "c", "source": "asset://c-alt"}]}},
+      {"tool": "inspect", "args": {"ids": ["c"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 1, "edits": [{"op": "replace_source", "clip_id": "c", "source": "asset://c-alt"}]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-2"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 2,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "c", "start_frame": 72, "duration_frames": 96}
+    ],
+    "expected_errors": ["STALE_REVISION"],
+    "acceptable_error_sequences": [[], ["STALE_REVISION"]],
+    "acceptable_revisions": [1, 2]
+  },
+  {
+    "id": "metadata-on-b",
+    "prompt": "On clip b, set audio gain to -3000 milli-dB, add marker marker-1 labeled beat drop, and add subtitle subtitle-1 with text Hello.",
+    "requests": [
+      {"tool": "find", "args": {"query": "asset://b"}},
+      {"tool": "inspect", "args": {"ids": ["b"]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "set_audio_gain", "clip_id": "b", "gain_db_milli": -3000},
+        {"op": "add_marker", "id": "marker-1", "clip_id": "b", "label": "beat drop"},
+        {"op": "add_subtitle", "id": "subtitle-1", "clip_id": "b", "text": "Hello"}
+      ]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "b", "start_frame": 72, "duration_frames": 72},
+      {"id": "c", "start_frame": 144, "duration_frames": 96}
+    ],
+    "expected_markers": [
+      {"id": "marker-1", "clip_id": "b", "label": "beat drop"}
+    ],
+    "expected_subtitles": [
+      {"id": "subtitle-1", "clip_id": "b", "text": "Hello"}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "recover-from-duplicate-marker",
+    "prompt": "Add marker marker-1 labeled beat drop to clip b. If a duplicate metadata error occurs, retry with one marker only and commit the valid edit.",
+    "requests": [
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "add_marker", "id": "marker-1", "clip_id": "b", "label": "beat drop"},
+        {"op": "add_marker", "id": "marker-1", "clip_id": "b", "label": "beat drop"}
+      ]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "add_marker", "id": "marker-1", "clip_id": "b", "label": "beat drop"}
+      ]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "b", "start_frame": 72, "duration_frames": 72},
+      {"id": "c", "start_frame": 144, "duration_frames": 96}
+    ],
+    "expected_markers": [
+      {"id": "marker-1", "clip_id": "b", "label": "beat drop"}
+    ],
+    "expected_subtitles": [],
+    "expected_errors": ["DUPLICATE_METADATA"],
+    "acceptable_error_sequences": [[], ["DUPLICATE_METADATA"]]
+  },
+  {
+    "id": "recover-from-invalid-duration",
+    "prompt": "Trim clip b to zero frames to test validation. If INVALID_DURATION occurs, recover by trimming clip b to exactly 48 frames and commit it.",
+    "requests": [
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "trim", "clip_id": "b", "duration_frames": 0}
+      ]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "trim", "clip_id": "b", "duration_frames": 48}
+      ]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 72},
+      {"id": "b", "start_frame": 72, "duration_frames": 48},
+      {"id": "c", "start_frame": 120, "duration_frames": 96}
+    ],
+    "expected_markers": [],
+    "expected_subtitles": [],
+    "expected_errors": ["INVALID_DURATION"],
+    "acceptable_error_sequences": [[], ["INVALID_DURATION"]]
+  },
+  {
+    "id": "recover-from-missing-anchor",
+    "prompt": "Move clip c after itself to test the invalid self-anchor. If MISSING_ANCHOR occurs, recover by moving clip c to the beginning and commit it.",
+    "requests": [
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "move_after", "clip_id": "c", "after": "c"}
+      ]}},
+      {"tool": "plan_edit", "args": {"base_revision": 0, "edits": [
+        {"op": "move_after", "clip_id": "c", "after": null}
+      ]}},
+      {"tool": "commit_edit", "args": {"plan_token": "plan-1"}},
+      {"tool": "verify"}
+    ],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "c", "start_frame": 0, "duration_frames": 96},
+      {"id": "a", "start_frame": 96, "duration_frames": 72},
+      {"id": "b", "start_frame": 168, "duration_frames": 72}
+    ],
+    "expected_markers": [],
+    "expected_subtitles": [],
+    "expected_errors": ["MISSING_ANCHOR"],
+    "acceptable_error_sequences": [[], ["MISSING_ANCHOR"]]
+  }
+]

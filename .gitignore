@@ -1,3 +1,10 @@
-/target
+target/
 .DS_Store
 *.swp
+
+# Generated experiment media and render outputs
+experiments/product-path/fixtures/media/
+experiments/product-path/fixtures/long-media/
+experiments/product-path/fixtures/output/
+experiments/product-path/pi/node_modules/
+**/__pycache__/

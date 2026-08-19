@@ -16,5 +16,6 @@ mise exec -- cargo check --workspace
 mise exec -- cargo test --workspace
 ```
 
-See [`docs/architecture.md`](docs/architecture.md) and
+See [`docs/architecture.md`](docs/architecture.md),
+[`docs/roadmap.md`](docs/roadmap.md), and
 [`docs/rust-style-guide.md`](docs/rust-style-guide.md).

@@ -47,3 +47,35 @@ jobs:
             --all-targets \
             --all-features \
             -- -D warnings
+
+  experiment:
+    name: Product path experiment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install pinned toolchain with mise
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
+
+      - name: Check experiment crate
+        run: |
+          mise exec -- cargo check \
+            --manifest-path experiments/product-path/Cargo.toml \
+            --all-targets
+
+      - name: Test experiment crate
+        run: |
+          mise exec -- cargo test \
+            --manifest-path experiments/product-path/Cargo.toml
+
+      - name: Run experiment Clippy
+        run: >-
+          mise exec -- cargo clippy \
+            --manifest-path experiments/product-path/Cargo.toml \
+            --all-targets \
+            -- -D warnings
+
+      - name: Check Python scripts
+        run: python3 -m py_compile experiments/product-path/scripts/*.py

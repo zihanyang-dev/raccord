@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "fps": "24/1",
+  "clips": [
+    { "id": "a", "source": "asset://a", "durationFrames": 72 },
+    { "id": "b", "source": "asset://b", "durationFrames": 72 },
+    { "id": "c", "source": "asset://c", "durationFrames": 96 }
+  ],
+  "transaction": {
+    "baseRevision": 0,
+    "ops": [
+      { "op": "ripple_delete", "clip": "b" }
+    ]
+  },
+  "expected": {
+    "placements": [
+      { "id": "a", "startFrame": 0, "durationFrames": 72 },
+      { "id": "c", "startFrame": 72, "durationFrames": 96 }
+    ],
+    "revision": 1
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "add-crossfade-b-c",
+    "prompt": "On the long timeline, add a one-second crossfade transition from clip b to the adjacent clip c. Use transition id crossfade-b-c and duration_frames 24, then verify the result.",
+    "requests": [],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 192},
+      {"id": "b", "start_frame": 192, "duration_frames": 192},
+      {"id": "c", "start_frame": 384, "duration_frames": 192},
+      {"id": "d", "start_frame": 576, "duration_frames": 192},
+      {"id": "e", "start_frame": 768, "duration_frames": 192},
+      {"id": "f", "start_frame": 960, "duration_frames": 192}
+    ],
+    "expected_markers": [],
+    "expected_subtitles": [],
+    "expected_transitions": [
+      {"id": "crossfade-b-c", "from_clip_id": "b", "to_clip_id": "c", "kind": "crossfade", "duration_frames": 24}
+    ],
+    "expected_errors": []
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "long-metadata-on-d",
+    "prompt": "On the 48-second timeline, set clip d audio gain to -3000 milli-dB, add marker long-marker-1 labeled middle beat to clip d, and add subtitle long-subtitle-1 with text HELLO to clip b.",
+    "requests": [],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "a", "start_frame": 0, "duration_frames": 192},
+      {"id": "b", "start_frame": 192, "duration_frames": 192},
+      {"id": "c", "start_frame": 384, "duration_frames": 192},
+      {"id": "d", "start_frame": 576, "duration_frames": 192},
+      {"id": "e", "start_frame": 768, "duration_frames": 192},
+      {"id": "f", "start_frame": 960, "duration_frames": 192}
+    ],
+    "expected_markers": [
+      {"id": "long-marker-1", "clip_id": "d", "label": "middle beat"}
+    ],
+    "expected_subtitles": [
+      {"id": "long-subtitle-1", "clip_id": "b", "text": "HELLO"}
+    ],
+    "expected_errors": []
+  },
+  {
+    "id": "long-trim-and-move",
+    "prompt": "On the long timeline, trim clip e to exactly 120 frames and move clip f to the beginning, keeping the other clips in order.",
+    "requests": [],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "f", "start_frame": 0, "duration_frames": 192},
+      {"id": "a", "start_frame": 192, "duration_frames": 192},
+      {"id": "b", "start_frame": 384, "duration_frames": 192},
+      {"id": "c", "start_frame": 576, "duration_frames": 192},
+      {"id": "d", "start_frame": 768, "duration_frames": 192},
+      {"id": "e", "start_frame": 960, "duration_frames": 120}
+    ],
+    "expected_markers": [],
+    "expected_subtitles": [],
+    "expected_errors": []
+  },
+  {
+    "id": "long-recover-from-self-anchor",
+    "prompt": "On the long timeline, deliberately try to move clip c after itself. If MISSING_ANCHOR occurs, recover by moving clip c to the beginning and commit the valid edit.",
+    "requests": [],
+    "expected_revision": 1,
+    "expected_placements": [
+      {"id": "c", "start_frame": 0, "duration_frames": 192},
+      {"id": "a", "start_frame": 192, "duration_frames": 192},
+      {"id": "b", "start_frame": 384, "duration_frames": 192},
+      {"id": "d", "start_frame": 576, "duration_frames": 192},
+      {"id": "e", "start_frame": 768, "duration_frames": 192},
+      {"id": "f", "start_frame": 960, "duration_frames": 192}
+    ],
+    "expected_markers": [],
+    "expected_subtitles": [],
+    "expected_errors": ["MISSING_ANCHOR"],
+    "acceptable_error_sequences": [[], ["MISSING_ANCHOR"]]
+  }
+]

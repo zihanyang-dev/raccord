@@ -11,3 +11,8 @@ raccord-cache = { path = "../raccord-cache" }
 raccord-ir = { path = "../raccord-ir" }
 raccord-planner = { path = "../raccord-planner" }
 raccord-rmap = { path = "../raccord-rmap" }
+raccord-timeline = { path = "../raccord-timeline" }
+raccord-time = { path = "../raccord-time" }
+
+[dev-dependencies]
+raccord-time = { path = "../raccord-time" }

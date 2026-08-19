@@ -1,0 +1,43 @@
+{
+  "revision": 0,
+  "clips": [
+    {
+      "id": "a",
+      "source": "asset://a",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    },
+    {
+      "id": "b",
+      "source": "asset://b",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    },
+    {
+      "id": "c",
+      "source": "asset://c",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    },
+    {
+      "id": "d",
+      "source": "asset://d",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    },
+    {
+      "id": "e",
+      "source": "asset://e",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    },
+    {
+      "id": "f",
+      "source": "asset://f",
+      "duration_frames": 192,
+      "audio_gain_db_milli": 0
+    }
+  ],
+  "markers": [],
+  "subtitles": []
+}
