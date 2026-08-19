@@ -25,6 +25,9 @@ jobs:
       - name: Install pinned toolchain with mise
         uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
 
+      - name: Install Rust CI components
+        run: mise exec -- rustup component add --toolchain 1.97.0 rustfmt clippy
+
       - name: Show toolchain
         run: |
           mise current rust
@@ -58,6 +61,9 @@ jobs:
 
       - name: Install pinned toolchain with mise
         uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
+
+      - name: Install Rust CI components
+        run: mise exec -- rustup component add --toolchain 1.97.0 rustfmt clippy
 
       - name: Check experiment crate
         run: |
